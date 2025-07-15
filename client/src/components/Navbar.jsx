@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom'
 import {assets} from "../assets/assets"
 import { AppContext } from '../context/AppContext'
@@ -7,6 +7,7 @@ const Navbar = () => {
 
     const {user, setShowLogin, logout, credit} = useContext(AppContext);
     const navigate = useNavigate();
+    const [showDropdown, setShowDropdown] = useState(false);
 
 
     return (
@@ -23,13 +24,21 @@ const Navbar = () => {
                             <p className='text-xs sm:text-sm font-medium text-gray-600'>Credit left : {credit}</p>
                         </button>
                         <p className='text-gray-600 max-sm:hidden pl-4'>Hi, {user.name}</p>
-                        <div className='relative group cursor-pointer'>
-                            <img src={assets.profile_icon} alt="" className='w-10 drop-shadow cursor-pointer' />
-                            <div className="absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-12">
+                        <div 
+                            className='relative cursor-pointer' 
+                            onClick={() => setShowDropdown(prev => !prev)} // toggle on click for mobile
+                            onMouseEnter={() => setShowDropdown(true)}     // open on hover for desktop
+                            onMouseLeave={() => setShowDropdown(false)}    // close on mouse out (desktop)
+                            >
+                            <img src={assets.profile_icon} alt="" className='w-10 drop-shadow' />
+                            
+                            {showDropdown && (
+                                <div className="absolute top-0 right-0 z-10 text-black rounded pt-12">
                                 <ul className='list-none m-0 p-2 bg-white rounded-md border text-sm'>
                                     <li onClick={logout} className='py-1 px-2 cursor-pointer pr-10'>Logout</li>
                                 </ul>
-                            </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                     :
@@ -37,7 +46,7 @@ const Navbar = () => {
                         <p onClick={()=>{navigate("/buy")}} className='cursor-pointer lg:py-1'>Pricing</p>
                         <button onClick={()=> setShowLogin(true)} className='bg-zinc-800 text-white px-7 py-2 sm:px-10 text-sm rounded-full cursor-pointer'>Login</button>
                     </div>
-                }
+                }   
             </div>
 
         </div>
